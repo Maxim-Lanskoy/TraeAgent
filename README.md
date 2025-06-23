@@ -4,20 +4,13 @@
 
 ---
 
-![Swift](https://img.shields.io/badge/Swift-f05138?logo=swift&logoColor=white)  
-![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)  
-![llama.cpp](https://img.shields.io/badge/llama.cpp-00bfa6?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgxMnYxMkgweiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=)  
-![Docker](https://img.shields.io/badge/Docker-0db7ed?logo=docker&logoColor=white)  
-![Apple Silicon](https://img.shields.io/badge/Apple Silicon-b2b2b2?logo=apple&logoColor=white)  
-![MCP](https://img.shields.io/badge/Model Context Protocol-7348ff)  
-![Telethon](https://img.shields.io/badge/Telethon-2895d3)  
-![ChromaDB](https://img.shields.io/badge/Chroma-ff6e6e)
+![Swift](https://img.shields.io/badge/Swift-f05138?logo=swift&logoColor=white)  ![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)  ![llama.cpp](https://img.shields.io/badge/llama.cpp-00bfa6?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgxMnYxMkgweiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=)  ![Docker](https://img.shields.io/badge/Docker-0db7ed?logo=docker&logoColor=white)  ![Apple Silicon](https://img.shields.io/badge/Apple Silicon-b2b2b2?logo=apple&logoColor=white)  ![MCP](https://img.shields.io/badge/Model Context Protocol-7348ff)  ![Telethon](https://img.shields.io/badge/Telethon-2895d3)  ![ChromaDB](https://img.shields.io/badge/Chroma-ff6e6e)
 
 ---
 
-> **NeuroNaut** is a fully self‑hosted, lifelong‑learning agent inspired by *Voyager*.  It runs entirely on your own Apple‑Silicon or Intel Macs, explores new environments, discovers reusable **skills**, and executes real tools through the **Model Context Protocol (MCP)**.
->
-> *No cloud APIs.  No data leaves your LAN.  Just pure, private AI power.*
+**NeuroNaut** is a fully self‑hosted, lifelong‑learning agent inspired by *Voyager*.  It runs entirely on your own Apple‑Silicon or Intel Macs, explores new environments, discovers reusable **skills**, and executes real tools through the **Model Context Protocol (MCP)**.
+
+*No cloud APIs.  No data leaves your LAN.  Just pure, private AI power.*
 
 ---
 
@@ -37,32 +30,42 @@ Over time NeuroNaut builds a personal toolbox of code routines and action macros
 
 ## 🏗️ System Architecture
 
-```mermaid
-flowchart TD
-    subgraph Agent
-        A[Agent Loop] -->|prompt| L(LLM Core)
-        L -->|tool_call JSON| C(MCP Controller)
-        C -->|invoke| T(MCP Tools)
-        T -->|result| C -->|result + logs| A
-        A --> M(Memory / RAG)
-        A --> S(Skill Library)
-    end
-
-    subgraph MCP Tools
-        TG(Telegram‑MCP)
-        CE(Code Executor)
-        FS(Filesystem / Terminal)
-        UT(Utility / Fetch ...)
-    end
-
-    C --> TG & CE & FS & UT
-```
-
 * **LLM Core** – llama.cpp‑backed local model pool (Mistral Small 3 default). Load‑balanced via **Paddler** or **Petals**.
 * **Memory /RAG** – Vector DB (Chroma/Qdrant) + optional Knowledge‑Graph MCP.
 * **Skill Library** – Proven code snippets/functions indexed by embeddings.
 * **MCP Tools** – Isolated services (Telegram, code‑sandbox, filesystem, etc.).
 * **Agent Loop** – Python `asyncio` controller orchestrating LLM ⇄ Tools ⇄ Memory.
+
+```mermaid
+flowchart LR
+  %% === Agent core ===
+  subgraph Agent["Agent (local)"]
+    A[Agent Loop] -->|prompt| L(LLM Core)
+    A --> M(Memory / RAG)
+    A --> S(Skill Library)
+    L -->|tool_call JSON| C(MCP Controller)
+    C -->|result + logs| A
+  end
+
+  %% === Tool side ===
+  subgraph "MCP Tools"
+    TG[Telegram‑MCP]
+    CE[Code Executor]
+    FS[Filesystem / Terminal]
+    UT[Utility / Fetch ...]
+  end
+
+  %% === Connections ===
+  C -->|invoke| TG
+  C -->|invoke| CE
+  C -->|invoke| FS
+  C -->|invoke| UT
+
+  TG -->|result| C
+  CE -->|result| C
+  FS -->|result| C
+  UT -->|result| C
+```
 
 ---
 
