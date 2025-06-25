@@ -1,146 +1,171 @@
 # 🧠 **NeuroNaut** – Autonomous Local‑First LLM Agent Platform
 
-**Self‑improving agents · On‑device & edge AI · Secure tool integration**
+**Self‑improving agents · On‑device & edge AI · Secure tool integration · Swift-powered modules**
 
 ---
 
-![Swift](https://img.shields.io/badge/Swift-f05138?logo=swift&logoColor=white)  ![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)  ![llama.cpp](https://img.shields.io/badge/llama.cpp-00bfa6?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMGgxMnYxMkgweiIgZmlsbD0iI2ZmZiIgLz48L3N2Zz4=)  ![Docker](https://img.shields.io/badge/Docker-0db7ed?logo=docker&logoColor=white)  ![Apple Silicon](https://img.shields.io/badge/Apple Silicon-b2b2b2?logo=apple&logoColor=white)  ![MCP](https://img.shields.io/badge/Model Context Protocol-7348ff)  ![Telethon](https://img.shields.io/badge/Telethon-2895d3)  ![ChromaDB](https://img.shields.io/badge/Chroma-ff6e6e)
+![Swift](https://img.shields.io/badge/Swift-f05138?logo=swift\&logoColor=white)  ![Python](https://img.shields.io/badge/Python-3776ab?logo=python\&logoColor=white)  ![llama.cpp](https://img.shields.io/badge/llama.cpp-00bfa6)  ![Docker](https://img.shields.io/badge/Docker-0db7ed)  ![Apple Silicon](https://img.shields.io/badge/Apple Silicon-b2b2b2)  ![MCP](https://img.shields.io/badge/Model Context Protocol-7348ff)  ![ChromaDB](https://img.shields.io/badge/Chroma-ff6e6e)
 
 ---
 
-**NeuroNaut** is a fully self‑hosted, lifelong‑learning agent inspired by *Voyager*.  It runs entirely on your own Apple‑Silicon or Intel Macs, explores new environments, discovers reusable **skills**, and executes real tools through the **Model Context Protocol (MCP)**.
+## 🚀 Quick Pitch
 
-*No cloud APIs.  No data leaves your LAN.  Just pure, private AI power.*
+**NeuroNaut** is a lifelong-learning, **autonomous agent** that runs locally and teaches itself to accomplish multi-step goals by:
 
----
+1. **Planning** – using a local LLM (Mistral, Qwen, Mixtral)
+2. **Acting** – issuing MCP tool calls (filesystem, web, CLI, Telegram)
+3. **Learning** – storing successful routines as reusable **skills**
+4. **Adapting** – retrieving past logs and skills for new tasks
 
-## 🚀 Quick Pitch
-
-NeuroNaut loops forever:
-
-1. **Perceive** – Read structured state from MCP tools (e.g. Telegram game chat, filesystem, compiler logs).
-2. **Plan & Think** – Use a local LLM (default **Mistral Small 3**, fallback **Mixtral 8×22 B** / **Qwen 3‑A3B**) with RAG memory.
-3. **Act** – Emit JSON function calls.  The controller invokes Telegram buttons, compiles Swift, runs shell commands…
-4. **Learn** – If the action succeeds, summarise it into a new **skill**.  Store code + docstring + embedding → Skill Library.
-5. **Repeat** – Automatic curriculum keeps pushing to harder goals (beat RPG boss, ship Swift package, etc.).
-
-Over time NeuroNaut builds a personal toolbox of code routines and action macros – ready to solve ever larger tasks.
+> Inspired by Voyager, powered by Swift + Python, tested on Raspberry Pi and Apple Silicon.
 
 ---
 
-## 🏗️ System Architecture
-
-* **LLM Core** – llama.cpp‑backed local model pool (Mistral Small 3 default). Load‑balanced via **Paddler** or **Petals**.
-* **Memory /RAG** – Vector DB (Chroma/Qdrant) + optional Knowledge‑Graph MCP.
-* **Skill Library** – Proven code snippets/functions indexed by embeddings.
-* **MCP Tools** – Isolated services (Telegram, code‑sandbox, filesystem, etc.).
-* **Agent Loop** – Python `asyncio` controller orchestrating LLM ⇄ Tools ⇄ Memory.
+## 🧩 System Architecture
 
 ```mermaid
 flowchart LR
-  %% === Agent core ===
-  subgraph Agent["Agent (local)"]
-    A[Agent Loop] -->|prompt| L(LLM Core)
+  subgraph Agent["Agent (Local Host)"]
+    A[Agent Loop] -->|Prompt| L(LLM Core)
     A --> M(Memory / RAG)
     A --> S(Skill Library)
-    L -->|tool_call JSON| C(MCP Controller)
-    C -->|result + logs| A
+    L -->|Tool Call JSON| C(MCP Controller)
+    C -->|Result| A
   end
 
-  %% === Tool side ===
-  subgraph "MCP Tools"
-    TG[Telegram‑MCP]
-    CE[Code Executor]
+  subgraph MCP_Tools["MCP Tool Servers"]
+    TG[Telegram MCP]
+    CE[Code Executor Swift/Python]
     FS[Filesystem / Terminal]
-    UT[Utility / Fetch ...]
+    WS[Web Search / Fetch]
+    UT[Utility / Misc]
   end
 
-  %% === Connections ===
-  C -->|invoke| TG
-  C -->|invoke| CE
-  C -->|invoke| FS
-  C -->|invoke| UT
+  C --> TG
+  C --> CE
+  C --> FS
+  C --> WS
+  C --> UT
 
-  TG -->|result| C
-  CE -->|result| C
-  FS -->|result| C
-  UT -->|result| C
+  TG --> C
+  CE --> C
+  FS --> C
+  WS --> C
+  UT --> C
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Component Overview
 
-| Layer | Component | Notes |
-|-------|-----------|-------|
-| **LLM Inference** | **llama.cpp** (Apple Silicon) | 4‑bit GGUF models; GPU/Metal acceleration |
-|  | **Paddler / Petals** | Distribute queries across multiple Macs |
-| **Default Model** | **Mistral Small 3 (24 B)** | 150 tok/s, native function‑calling, 128 K ctx, vision variant |
-| **Fallbacks** | Mixtral 8×22 B · Qwen 3‑30B‑A3B | Higher reasoning / longer context |
-| **Orchestration** | LangChain / LlamaIndex | Pure‑local pipelines |
-| **Vector DB** | Chroma / Qdrant | Stores memories & skill metadata |
-| **MCP Servers** | Telegram‑MCP · Code‑Executor · Filesystem · iTerm | Secure, sandboxed tool wrappers |
-| **Languages** | Swift · Python · Bash | Swift for exec tools, Python for orchestration |
-| **Ops** | Docker · Git · systemd | Containerised services, auto‑restart |
+| Layer              | Component                    | Notes                                      |
+| ------------------ | ---------------------------- | ------------------------------------------ |
+| **LLM Inference**  | `llama.cpp` + GGUF + Paddler | Mistral Small 3, Mixtral, Qwen 3 supported |
+|                    | Petals                       | Optional distributed inference             |
+| **Planning**       | LangChain / Python / Swift   | Generates step-by-step goals               |
+| **Tool Execution** | MCP (Model Context Protocol) | Secure JSON tool interface                 |
+| **Memory / RAG**   | Chroma / Qdrant              | Stores logs, task history, embeddings      |
+| **Skill Library**  | JSON/SQLite + Embeddings     | Stores reusable code/actions               |
+| **Execution**      | Swift + Docker + Shell       | Secure wrappers for CLI/Swift tools        |
 
 ---
 
-### 🔍 Language‑Model Selection Matrix
+## 🧠 Loop Lifecycle
 
-| # | Requirement | Best Fit | Why |
-|---|-------------|---------|-----|
-| 1 | Tool/function JSON | **Mistral Small 3** | OpenAI‑style schema, zero adapter code |
-| 2 | Fast inference (< 32 GB) | **Mistral Small 3** | 11 GB Q4\_K\_M, 150 tok/s |
-| 3 | Deep reasoning | Mixtral 8×22 B | +10 % higher coding benchmarks |
-| 4 | > 65 K context | Qwen 3‑30B‑A3B | 131 K tokens |
-| 5 | Native vision | Mistral Small 3 Vision | Built‑in SigLIP encoder |
-
-Switch engines via `LLM_BACKEND` env var.  GGUF models live in `./models`.
-
----
-
-## 📚 Open‑Source Building Blocks
-
-* **llama.cpp** – local LLM runtime (Apple Metal / CPU)
-* **Paddler** – Rust balancer for multiple llama.cpp servers
-* **Telethon‑MCP** – Telegram API wrapper as MCP tool
-* **modelcontextprotocol/servers** – reference *code‑executor*, *filesystem*, *memory* tools
-* **Chroma / Qdrant** – vector stores for RAG & skills
-* **LangChain / LlamaIndex** – orchestration layer
-* **Docker** – containerise MCP servers, DB, dashboards
-
-All under permissive licences (Apache 2.0, MIT).  100 % self‑hosted.
+1. Receive high-level goal
+2. Retrieve memory and skills via embedding search
+3. Plan subgoals with local LLM
+4. Emit structured tool calls (e.g. run code, search web)
+5. Observe result/output
+6. Critic (optional) evaluates result
+7. Retry or confirm
+8. If successful: generate docstring + function → add to Skill Library
 
 ---
 
-## 🗺️ Development Roadmap & Checklist
+## 🧪 Supported Tools (via MCP)
 
-- [ ] **LLM Inference Setup** – build & test llama.cpp (LLaMA‑2 7 B)
-- [ ] **Cluster Balancing** – deploy Paddler / Petals pool
-- [ ] **Telegram‑MCP** – connect bot, test `press_button`
-- [ ] **Code‑Executor MCP** – sandboxed Swift/Python compile‑run
-- [ ] **Filesystem MCP** – read/write code, logs
-- [ ] **Vector DB** – install Chroma, integrate embeddings
-- [ ] **Skill Library v0** – JSON/SQLite schema, embedding index
-- [ ] **Agent Loop MVP** – prompt → JSON tool → result loop
-- [ ] **RPG Autoplay PoC** – reach level 2 automatically
-- [ ] **Self‑Verification & Rewards** – goal checker helper
-- [ ] **Swift‑Package Builder** – generate, compile, iterate
-- [ ] **Memory Replay & Long‑term RAG**
-- [ ] **Skill Consolidation** – summarise & store reusable skills
-- [ ] **Safety Rails** – timeouts, retry, sandbox quotas
-- [ ] **Progress File** – agent marks tasks complete for next session
-
-> **Progress is persistent** – the agent resumes where the checklist stops.
+| Tool Server        | Purpose                                              |
+| ------------------ | ---------------------------------------------------- |
+| **Filesystem MCP** | Read/write/append/edit files (controlled path)       |
+| **Terminal MCP**   | Run bash commands (allowlisted only)                 |
+| **Code Executor**  | Compile/run Swift & Python via sandbox or Docker     |
+| **Telegram MCP**   | Chat integration for gamebots or tasks               |
+| **Web Fetcher**    | HTTP requests for data fetching or queries           |
+| **Memory MCP**     | Store and retrieve raw info (key-value or doc store) |
 
 ---
 
-## 📈 How It Learns (Quick Example)
+## 🧰 Swift Integration
 
-1. **Goal** → “Defeat Forest Goblin Boss.”  
-2. LLM plans → calls `press_button{"label":"Hunt"}`  
-3. Telegram‑MCP presses *Hunt*; returns fight log.  
-4. LLM interprets HP & damage, decides to heal → `press_button{"label":"Use Potion"}`.  
-5. After victory, controller prompts: *"Write a reusable skill."*  
-6. LLM emits Python function `def fight_forest_boss(): ...` + docstring.  
-7. Skill stored in library with embedding.  Next time, similar goal triggers retrieval & reuse.
+* MCP tools written in Swift for performance and control
+* Swift Package support: agent can build, run, and debug Swift code from README
+* Optional Swift CLI version of the agent loop (in progress)
+* Uses native Swift wrappers for:
+
+  * bash command sandbox
+  * file edits
+  * code compilation (xcodebuild / swift build)
+
+---
+
+## 🧠 Skill Library Format
+
+```json
+{
+  "name": "create_swift_package",
+  "description": "Create and compile a Swift executable from spec",
+  "code": "swift package init --type executable...",
+  "tools_used": ["Filesystem", "Code Executor"],
+  "embedding": [0.124, -0.534, ...],
+  "success_rate": 0.92
+}
+```
+
+Indexed via vector DB for retrieval. Agent can call old skills if task is similar.
+
+---
+
+## 🛡️ Safety & Control
+
+* MCP tool call quotas and rate limits
+* Tool input sanitization (no `rm`, no internet writes)
+* Timeout and watchdogs for infinite loops
+* Session resumption & audit logging
+
+---
+
+## 📈 Development Roadmap
+
+* [ ] **LLM Setup** – install llama.cpp, load Mistral model
+* [ ] **Multi-host Scaling** – set up Paddler with Macs + Pi
+* [ ] **MCP Tool Servers** – filesystem, terminal, code, web, memory
+* [ ] **Agent Loop MVP** – planning + tool call + retry loop
+* [ ] **Skill Library v1** – indexed by embedding + metadata
+* [ ] **Memory Persistence** – log, skill, context snapshots
+* [ ] **Self-Verification** – optional critic LLM step
+* [ ] **GUI Monitor / TUI log viewer**
+* [ ] **Auto-curriculum** – escalate task difficulty based on past success
+* [ ] **Fine-tuning / LoRA support** – optional later phase
+
+---
+
+## 📚 Resources Used
+
+* [llama.cpp](https://github.com/ggerganov/llama.cpp)
+* [Qwen-Agent](https://github.com/QwenLM/Qwen-Agent)
+* [modelcontextprotocol](https://github.com/modelcontextprotocol/servers)
+* [ChromaDB](https://github.com/chroma-core/chroma)
+* [Paddler](https://github.com/distantmagic/paddler)
+* [Voyager](https://voyager.minedojo.org)
+* [Anthropic Claude / MCP](https://docs.anthropic.com)
+
+All components are Apache 2.0 or MIT licensed.
+
+---
+
+## ✅ Summary
+
+**NeuroNaut** is a secure, autonomous agent framework with real tool access and self-adaptive learning. It uses Swift where performance and control matter, with Python-based glue and memory orchestration. Inspired by Voyager and Claude, but 100% self-hosted and customizable.
+
+Supports Swift toolchains, full local LLMs, replayable skills, embedded memory, and tool use over MCP. Learns and grows task by task.
