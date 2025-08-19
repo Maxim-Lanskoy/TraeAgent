@@ -17,7 +17,7 @@ For technical details please refer to [our technical report](https://arxiv.org/a
 ## ✨ Features
 
 - 🌊 **Lakeview**: Provides short and concise summarisation for agent steps
-- 🤖 **Multi-LLM Support**: Works with OpenAI, Anthropic, Doubao, Azure, OpenRouter, Ollama and Google Gemini APIs
+- 🤖 **Multi-LLM Support**: Works with OpenAI, Anthropic, Doubao, Azure, OpenRouter, Ollama, Google Gemini, and LM Studio APIs
 - 🛠️ **Rich Tool Ecosystem**: File editing, bash execution, sequential thinking, and more
 - 🎯 **Interactive Mode**: Conversational interface for iterative development
 - 📊 **Trajectory Recording**: Detailed logging of all agent actions for debugging and analysis
@@ -29,6 +29,7 @@ For technical details please refer to [our technical report](https://arxiv.org/a
 ### Requirements
 - UV (https://docs.astral.sh/uv/)
 - API key for your chosen provider (OpenAI, Anthropic, Google Gemini, OpenRouter, etc.)
+  - **Note**: LM Studio doesn't require an API key - just have LM Studio running locally
 
 ### Setup
 
@@ -69,6 +70,10 @@ model_providers:  # model providers configuration
   openai:
     api_key: your_openai_api_key
     provider: openai
+  lm-studio:  # For local LM Studio models
+    provider: lm-studio
+    # api_key is optional - defaults to "lm-studio"
+    # base_url is optional - defaults to "http://localhost:1234/v1"
 
 models:
   trae_agent_model:
@@ -91,6 +96,9 @@ export GOOGLE_API_KEY="your-google-api-key"
 export OPENROUTER_API_KEY="your-openrouter-api-key"
 export DOUBAO_API_KEY="your-doubao-api-key"
 export DOUBAO_BASE_URL="https://ark.cn-beijing.volces.com/api/v3/"
+# LM Studio (optional - defaults will be used if not set)
+export LM_STUDIO_API_KEY="lm-studio"  # Optional - default value
+export LM_STUDIO_BASE_URL="http://localhost:1234/v1"  # Optional - default value
 ```
 
 ### MCP Services (Optional)
@@ -108,6 +116,40 @@ mcp_servers:
 **Configuration Priority:** Command-line arguments > Configuration file > Environment variables > Default values
 
 **Legacy JSON Configuration:** If using the older JSON format, see [docs/legacy_config.md](docs/legacy_config.md). We recommend migrating to YAML.
+
+### LM Studio Configuration
+
+LM Studio provides a local OpenAI-compatible API for running large language models. Here's how to configure it:
+
+**Minimal Configuration:**
+```yaml
+model_providers:
+  lm-studio:
+    provider: lm-studio
+    # Both api_key and base_url are optional!
+```
+
+**Full Configuration:**
+```yaml
+model_providers:
+  lm-studio:
+    provider: lm-studio
+    api_key: lm-studio  # Optional - defaults to "lm-studio"
+    base_url: http://192.168.3.26:1234/v1  # Optional - defaults to "http://localhost:1234/v1"
+
+models:
+  my_lm_studio_model:
+    model_provider: lm-studio
+    model: openai/gpt-oss-120b  # Must match your model name in LM Studio
+    max_tokens: 4096
+    temperature: 0.7
+```
+
+**Key Features:**
+- **No Authentication Required**: LM Studio doesn't need API keys
+- **Automatic Defaults**: If not specified, uses `localhost:1234` as the default server
+- **OpenAI Compatible**: Uses the same interface as OpenAI, ensuring full feature compatibility
+- **Tool Support**: Supports function/tool calling if your model supports it
 
 ## 📖 Usage
 
@@ -145,6 +187,9 @@ trae-cli run "Refactor the database module" --provider doubao --model doubao-see
 
 # Ollama (local models)
 trae-cli run "Comment this code" --provider ollama --model qwen3
+
+# LM Studio (local models via OpenAI-compatible API)
+trae-cli run "Analyze this function" --provider lm-studio --model openai/gpt-oss-120b
 ```
 
 ### Advanced Options

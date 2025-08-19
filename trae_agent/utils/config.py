@@ -214,6 +214,9 @@ class Config:
         if model_providers is not None and len(model_providers.keys()) > 0:
             config_model_providers: dict[str, ModelProvider] = {}
             for model_provider_name, model_provider_config in model_providers.items():
+                # Handle lm-studio provider specially - api_key is optional
+                if model_provider_config.get("provider") == "lm-studio" and "api_key" not in model_provider_config:
+                    model_provider_config["api_key"] = "lm-studio"  # Default api_key for lm-studio
                 config_model_providers[model_provider_name] = ModelProvider(**model_provider_config)
             config.model_providers = config_model_providers
         else:
