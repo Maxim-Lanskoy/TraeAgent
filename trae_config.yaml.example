@@ -8,6 +8,7 @@ agents:
             - str_replace_based_edit_tool
             - sequentialthinking
             - task_done
+
 allow_mcp_servers:
     - playwright
 mcp_servers:
@@ -15,6 +16,7 @@ mcp_servers:
         command: npx
         args:
             - "@playwright/mcp@0.0.27"
+
 lakeview:
     model: lakeview_model
 
@@ -22,11 +24,20 @@ model_providers:
     anthropic:
         api_key: your_anthropic_api_key
         provider: anthropic
+    openai:
+        api_key: your_openai_api_key
+        provider: openai
+    doubao:
+        api_key:  lm-studio
+        base_url: https://ark.cn-beijing.volces.com/api/v3/
+        provider: doubao
+    lm-studio:
+        provider: lm-studio
 
 models:
     trae_agent_model:
-        model_provider: anthropic
-        model: claude-4-sonnet
+        model_provider: lm-studio
+        model: openai/gpt-oss-120b
         max_tokens: 4096
         temperature: 0.5
         top_p: 1
@@ -36,6 +47,15 @@ models:
     lakeview_model:
         model_provider: anthropic
         model: claude-3.5-sonnet
+        max_tokens: 4096
+        temperature: 0.5
+        top_p: 1
+        top_k: 0
+        max_retries: 10
+        parallel_tool_calls: true
+    doubao_model:
+        model_provider: doubao
+        model: openai/gpt-oss-120b
         max_tokens: 4096
         temperature: 0.5
         top_p: 1
