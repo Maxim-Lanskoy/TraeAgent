@@ -2,13 +2,8 @@
 
 [![arXiv:2507.23370](https://img.shields.io/badge/TechReport-arXiv%3A2507.23370-b31a1b)](https://arxiv.org/abs/2507.23370)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Pre-commit](https://github.com/bytedance/trae-agent/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/bytedance/trae-agent/actions/workflows/pre-commit.yml)
-[![Unit Tests](https://github.com/bytedance/trae-agent/actions/workflows/unit-test.yml/badge.svg)](https://github.com/bytedance/trae-agent/actions/workflows/unit-test.yml)
-[![Discord](https://img.shields.io/discord/1320998163615846420?label=Join%20Discord&color=7289DA)](https://discord.gg/VwaQ4ZBHvC)
 
 **Trae Agent** is an LLM-based agent for general purpose software engineering tasks. It provides a powerful CLI interface that can understand natural language instructions and execute complex software engineering workflows using various tools and LLM providers.
-
-For technical details please refer to [our technical report](https://arxiv.org/abs/2507.23370).
 
 **Project Status:** The project is still being actively developed. Please refer to [docs/roadmap.md](docs/roadmap.md) and [CONTRIBUTING](CONTRIBUTING.md) if you are willing to help us improve Trae Agent.
 
@@ -80,19 +75,6 @@ models:
 
 **Note:** The `trae_config.yaml` file is ignored by git to protect your API keys.
 
-### Environment Variables (Alternative)
-
-You can also configure API keys using environment variables and store them in the .env file:
-
-```bash
-export OPENAI_API_KEY="your-openai-api-key"
-export ANTHROPIC_API_KEY="your-anthropic-api-key"
-export GOOGLE_API_KEY="your-google-api-key"
-export OPENROUTER_API_KEY="your-openrouter-api-key"
-export DOUBAO_API_KEY="your-doubao-api-key"
-export DOUBAO_BASE_URL="https://ark.cn-beijing.volces.com/api/v3/"
-```
-
 ### MCP Services (Optional)
 
 To enable Model Context Protocol (MCP) services, add an `mcp_servers` section to your configuration:
@@ -106,8 +88,6 @@ mcp_servers:
 ```
 
 **Configuration Priority:** Command-line arguments > Configuration file > Environment variables > Default values
-
-**Legacy JSON Configuration:** If using the older JSON format, see [docs/legacy_config.md](docs/legacy_config.md). We recommend migrating to YAML.
 
 ## 📖 Usage
 
@@ -193,13 +173,7 @@ trae-cli run "Optimize database queries" --trajectory-file optimization_debug.js
 
 Trajectory files contain LLM interactions, agent steps, tool usage, and execution metadata. For more details, see [docs/TRAJECTORY_RECORDING.md](docs/TRAJECTORY_RECORDING.md).
 
-## 🔧 Development
-
-### Contributing
-
-For contribution guidelines, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
-
-### Troubleshooting
+## 🔧 Troubleshooting
 
 **Import Errors:**
 ```bash
@@ -226,21 +200,3 @@ chmod +x /path/to/your/project
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## ✍️ Citation
-
-```bibtex
-@article{traeresearchteam2025traeagent,
-      title={Trae Agent: An LLM-based Agent for Software Engineering with Test-time Scaling},
-      author={Trae Research Team and Pengfei Gao and Zhao Tian and Xiangxin Meng and Xinchen Wang and Ruida Hu and Yuanan Xiao and Yizhou Liu and Zhao Zhang and Junjie Chen and Cuiyun Gao and Yun Lin and Yingfei Xiong and Chao Peng and Xia Liu},
-      year={2025},
-      eprint={2507.23370},
-      archivePrefix={arXiv},
-      primaryClass={cs.SE},
-      url={https://arxiv.org/abs/2507.23370},
-}
-```
-
-## 🙏 Acknowledgments
-
-We thank Anthropic for building the [anthropic-quickstart](https://github.com/anthropics/anthropic-quickstarts) project that served as a valuable reference for the tool ecosystem.

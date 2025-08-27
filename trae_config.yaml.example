@@ -2,7 +2,7 @@ agents:
     trae_agent:
         enable_lakeview: true
         model: trae_agent_model
-        max_steps: 200
+        max_steps: 20
         tools:
             - bash
             - str_replace_based_edit_tool
@@ -33,6 +33,7 @@ model_providers:
         provider: doubao
     lm-studio:
         provider: lm-studio
+	base_url: http://localhost:1234/v1
 
 models:
     trae_agent_model:
