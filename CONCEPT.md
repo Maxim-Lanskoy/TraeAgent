@@ -1,6 +1,6 @@
-# NeuroNaut - Autonomous LLM Agent with MPC
+# Neuronaut - Autonomous LLM Agent with MPC
 
-We propose an **autonomous lifelong-learning agent** that uses a private local LLM to explore environments, build skills, and accomplish tasks via secure tool use. Inspired by MineDojo's *Voyager* agent and Anthropic’s Twitch/Mario demo, NeuroNaut continuously generates or receives goals (e.g. compile an app, defeat a game boss, build a Swift package from a README), reasons about them, retrieves past experiences from memory, and calls tools (e.g. game actions, CLI commands, code execution) to iteratively solve them.
+We propose an **autonomous lifelong-learning agent** that uses a private local LLM to explore environments, build skills, and accomplish tasks via secure tool use. Inspired by MineDojo's *Voyager* agent and Anthropic’s Twitch/Mario demo, Neuronaut continuously generates or receives goals (e.g. compile an app, defeat a game boss, build a Swift package from a README), reasons about them, retrieves past experiences from memory, and calls tools (e.g. game actions, CLI commands, code execution) to iteratively solve them.
 
 Over time, the agent builds a **Skill Library**—a set of reusable code routines or tool sequences—indexed by embeddings and re-applied in similar situations. The system includes **self-verification** and optional dual-agent setup (planner + critic), and runs **entirely locally** on Raspberry Pi or Apple Silicon machines using open models like **Qwen**, **Mistral**, and **Mixtral**, powered by `llama.cpp`.
 
@@ -102,7 +102,7 @@ Over time, the agent builds a **Skill Library**—a set of reusable code routine
 
 ## Comparison: Voyager, Claude-Mario, AutoGPT, Qwen-Agent
 
-| Feature                  | Voyager          | Claude-Mario     | AutoGPT       | Qwen-Agent   | **NeuroNaut**       |
+| Feature                  | Voyager          | Claude-Mario     | AutoGPT       | Qwen-Agent   | **Neuronaut**       |
 | ------------------------ | ---------------- | ---------------- | ------------- | ------------ | ------------------- |
 | Local execution          | ❌ Cloud-based    | ✅ Local (Twitch) | ✅ w/ setup    | ✅ (optional) | ✅ Fully local       |
 | MCP support              | ❌ No             | ✅ Yes (Claude)   | ❌ No          | ✅ Native     | ✅ Yes               |
@@ -115,6 +115,6 @@ Over time, the agent builds a **Skill Library**—a set of reusable code routine
 
 ## Summary
 
-**NeuroNaut** is a modular, self-contained agent that runs entirely on your local hardware. It connects open-source LLMs (Qwen, Mistral) to MCP tools (CLI, filesystem, Telegram), learns skills over time, and reuses them to complete new goals faster. It’s inspired by Voyager and Anthropic’s MCP vision, but implemented with your preferred tools—Swift, Apple Silicon, Docker, and vector memory. It can be extended with more tools, dual-agent critique, and a curriculum engine for long-term growth.
+**Neuronaut** is a modular, self-contained agent that runs entirely on your local hardware. It connects open-source LLMs (Qwen, Mistral) to MCP tools (CLI, filesystem, Telegram), learns skills over time, and reuses them to complete new goals faster. It’s inspired by Voyager and Anthropic’s MCP vision, but implemented with your preferred tools—Swift, Apple Silicon, Docker, and vector memory. It can be extended with more tools, dual-agent critique, and a curriculum engine for long-term growth.
 
 > This document forms the vision. See `README.md` for implementation checklist.

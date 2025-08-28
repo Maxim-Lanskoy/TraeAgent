@@ -1,4 +1,4 @@
-# 🧠 **NeuroNaut** – Autonomous Local‑First LLM Agent Platform
+# 🧠 **Neuronaut** – Autonomous Local‑First LLM Agent Platform
 
 **Self‑improving agents · On‑device & edge AI · Secure tool integration · Swift-powered modules**
 
@@ -10,7 +10,7 @@
 
 ## 🚀 Quick Pitch
 
-**NeuroNaut** is a lifelong-learning, **autonomous agent** that runs locally and teaches itself to accomplish multi-step goals by:
+**Neuronaut** is a lifelong-learning, **autonomous agent** that runs locally and teaches itself to accomplish multi-step goals by:
 
 1. **Planning** – using a local LLM (Mistral, Qwen, Mixtral)
 2. **Acting** – issuing MCP tool calls (filesystem, web, CLI, Telegram)
@@ -166,6 +166,6 @@ All components are Apache 2.0 or MIT licensed.
 
 ## ✅ Summary
 
-**NeuroNaut** is a secure, autonomous agent framework with real tool access and self-adaptive learning. It uses Swift where performance and control matter, with Python-based glue and memory orchestration. Inspired by Voyager and Claude, but 100% self-hosted and customizable.
+**Neuronaut** is a secure, autonomous agent framework with real tool access and self-adaptive learning. It uses Swift where performance and control matter, with Python-based glue and memory orchestration. Inspired by Voyager and Claude, but 100% self-hosted and customizable.
 
 Supports Swift toolchains, full local LLMs, replayable skills, embedded memory, and tool use over MCP. Learns and grows task by task.
