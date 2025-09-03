@@ -33,12 +33,25 @@ model_providers:
         provider: doubao
     lm-studio:
         provider: lm-studio
-	base_url: http://localhost:1234/v1
+        base_url: http://localhost:1234/v1
+    mistralai:
+        api_key: your_mistral_api_key
+        provider: mistralai
+        base_url: https://api.mistral.ai/v1
 
 models:
     trae_agent_model:
         model_provider: lm-studio
         model: openai/gpt-oss-120b
+        max_tokens: 4096
+        temperature: 0.5
+        top_p: 1
+        top_k: 0
+        max_retries: 10
+        parallel_tool_calls: true
+    mistralai_model:
+        model_provider: mistralai
+        model: mistral-large-latest
         max_tokens: 4096
         temperature: 0.5
         top_p: 1

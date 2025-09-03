@@ -23,6 +23,7 @@ class LLMProvider(Enum):
     DOUBAO = "doubao"
     GOOGLE = "google"
     LM_STUDIO = "lm-studio"
+    MISTRALAI = "mistralai"
 
 
 class LLMClient:
@@ -65,6 +66,10 @@ class LLMClient:
                 from .lm_studio_client import LMStudioClient
 
                 self.client = LMStudioClient(model_config)
+            case LLMProvider.MISTRALAI:
+                from .mistralai_client import MistralAIClient
+
+                self.client = MistralAIClient(model_config)
 
     def set_trajectory_recorder(self, recorder: TrajectoryRecorder | None) -> None:
         """Set the trajectory recorder for the underlying client."""

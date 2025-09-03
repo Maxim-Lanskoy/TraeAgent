@@ -183,6 +183,16 @@ trae_config.yaml
 # VS Code settings
 .vscode/
 !.vscode/launch.template.json
+.claude/
 
 # Patch selection python binary
 py312/
+
+# Swift related files
+.build
+.DS_Store
+*.sqlite
+.swiftpm
+.env.*
+!.env.example
+*.resolved

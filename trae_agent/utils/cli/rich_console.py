@@ -106,6 +106,9 @@ class RichConsoleApp(App[None]):
     def on_mount(self) -> None:
         """Called when the app is mounted."""
         self.title = "Trae Agent CLI"
+        
+        # Set the Dracula theme
+        self.theme = "dracula"
 
         self.execution_log = self.query_one("#execution_log", RichLog)
         self.token_display = self.query_one("#token_display", TokenDisplay)
@@ -323,7 +326,9 @@ class RichCLIConsole(CLIConsole):
     def print_task_details(self, details: dict[str, str]):
         """Print initial task configuration details."""
         if self.app and self.app.execution_log:
-            content = "\n".join([f"[bold]{key}:[/bold] {value}" for key, value in details.items()])
+            # Filter out the "Issue" key to avoid duplication with Current Task panel
+            filtered_details = {k: v for k, v in details.items() if k.lower() != "issue"}
+            content = "\n".join([f"[bold]{key}:[/bold] {value}" for key, value in filtered_details.items()])
             _ = self.app.execution_log.write(
                 Panel(content, title="Task Details", border_style="blue")
             )
